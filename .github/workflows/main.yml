@@ -34,5 +34,11 @@ jobs:
           pip install cyclonedx-bom
           cyclonedx-bom -r -o bom.xml
           cat bom.xml
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: bom.xml
+          retention-days: 5
 
     

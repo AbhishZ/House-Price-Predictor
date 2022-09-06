@@ -95,11 +95,11 @@ jobs:
        with:
         bandit_flags: '-lll -o sast.json -f json'
      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: sast-artifact
-          path: sast.json
-          retention-days: 5   
+       uses: actions/upload-artifact@v3
+       with:
+           name: sast-artifact
+           path: sast.json
+           retention-days: 5   
      
         
     

@@ -27,10 +27,12 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: python BOM
-        uses: CycloneDX/gh-python-generate-sbom@v1
-        continue-on-error: true
-      - name: Run a multi-line script
+#         uses: CycloneDX/gh-python-generate-sbom@v1
+#         continue-on-error: true
+#       - name: Run a multi-line script
         run: |
+          pip install cyclonedx-bom
           cyclonedx-bom -r -o bom.xml
+          cat bom.xml
 
     

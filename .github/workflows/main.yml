@@ -16,7 +16,26 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  
+  ## Trufflehog secret scan        
+  secret_scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - name: trufflehog-actions-scan
+        uses: edplato/trufflehog-actions-scan@master
+        with:
+          scanArguments: " "
+        continue-on-error: true
+    
+    
+## SBOM    
+  SBOM:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -29,7 +48,6 @@ jobs:
       - name: python BOM
 #         uses: CycloneDX/gh-python-generate-sbom@v1
 #         continue-on-error: true
-#       - name: Run a multi-line script
         run: |
           pip install cyclonedx-bom
           cyclonedx-bom -r -o bom.xml
@@ -37,8 +55,51 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: my-artifact
+          name: bom-artifact
           path: bom.xml
           retention-days: 5
 
+ ## Dependecy scan
+  dependency-scan:
+    name: Dependency scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v2
+        continue-on-error: true
+        
+        
+        
+  ## Python SAST SCAN      
+  sast_scan:
+    name: Python SAST scan
+    runs-on: ubuntu-latest
+#     permissions:
+#       contents: read # for checkout to fetch code
+#       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+
+    steps:
+     - uses: jpetrucciani/bandit-check@master
+
+    # specify a path
+     - uses: jpetrucciani/bandit-check@master
+       with:
+        path: '.'
+
+    # provide some flags
+     - uses: jpetrucciani/bandit-check@master
+       with:
+        bandit_flags: '-lll -o sast.json -f json'
+     - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sast-artifact
+          path: sast.json
+          retention-days: 5   
+     
+        
     

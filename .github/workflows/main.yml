@@ -31,6 +31,6 @@ jobs:
         continue-on-error: true
       - name: Run a multi-line script
         run: |
-          cyclonedx-bom -r -o ./bom.xml
+          cyclonedx-bom -r -o bom.xml
 
     
